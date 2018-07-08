@@ -4,6 +4,9 @@ public class Main {
     static Board board = new Board();
     static Computer computer;
 
+    private static boolean checkValidDifficulty(String s) {
+        return s.equals("easy") || s.equals("med") || s.equals("hard");
+    }
 
     public static void main(String[] args) {
         board.reset();
@@ -11,25 +14,26 @@ public class Main {
         System.out.println("Welcome to Tic Tac Toe!");
         System.out.println("Please choose a difficulty (easy, med, hard):");
         String diff = scanner.next();
-//        while (!diff.equals("easy") || !diff.equals("med") || !diff.equals("hard")) {
-//            System.out.println("Invalid difficulty. Please choose from the following: easy, med, hard");
-//            diff = scanner.next();
-//        }
+        while (!checkValidDifficulty(diff)) {
+            System.out.println("Invalid difficulty. Please choose from the following: easy, med, hard");
+            diff = scanner.next();
+        }
         computer = new Computer(diff);
         System.out.println("Please choose a number indicating your move.");
-        int move;
+        board.display();
+        int playerMove, computerMove;
         while (!board.gameOver()) {
-            board.display();
-            move = scanner.nextInt();
-            while (!board.isValidMove(move)) {
+            playerMove = scanner.nextInt();
+            while (!board.isValidMove(playerMove)) {
                 System.out.println("That cell is taken. Please choose another.");
-                move = scanner.nextInt();
+                playerMove = scanner.nextInt();
             }
-            board.update(move, 'X');
+            board.update(playerMove, 'X');
             board.display();
-            board.minimax(0, 0);
-            System.out.println("Computer chooses: " + board.computerMove);
-            board.update(board.computerMove, 'O');
+            computerMove = computer.makeMove(board);
+            System.out.println("Computer chooses: Cell #" + computerMove);
+            board.update(computerMove, 'O');
+            board.display();
         }
         if (board.gameOver()) {
             if (board.winner == 'X') {

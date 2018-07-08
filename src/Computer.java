@@ -1,14 +1,12 @@
 import java.util.*;
 
 public class Computer {
-    private static String difficulty;
-    private static int probability;
-    private static Random random;
+    private int probability;
+    private Random random;
 
-    public Computer(String diff) {
-       difficulty = diff;
+    Computer(String diff) {
        random = new Random();
-       switch(difficulty) {
+       switch(diff) {
            case "easy":
                 probability = 8;
                 break;
@@ -25,21 +23,18 @@ public class Computer {
     }
 
 
-    private static int chooseRandom(Board b) {
+    int chooseRandom(Board b) {
         List<Integer> availableSpots = b.getAvailableSpots();
         int chosen = random.nextInt(availableSpots.size());
         return availableSpots.get(chosen);
     }
 
-    public static void makeMove(Board b) {
+    int makeMove(Board b) {
         int chosen = random.nextInt(11);
         if (chosen > probability) {
-
+            b.minimax(0, 0);
+            return b.computerMove;
         }
-        else chooseRandom(b);
-    }
-
-    public static void main(String[] args) {
-
+        return chooseRandom(b);
     }
 }
