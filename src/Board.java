@@ -1,70 +1,132 @@
-public class Board {
-    static char[][] board;
-    static int numMoves;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-    public Board() {
-        numMoves = 0;
-        board = new char[3][3];
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                board[i][j] = ' ';
+public class Board {
+    char[] board;
+    char winner;
+    int computerMove;
+    Map<Integer, Integer> moveScores;
+
+    Board() {
+        board = new char[9];
+        moveScores = new HashMap<>();
+        for (int i = 0; i < 9; i++) {
+            board[i] = String.valueOf(i).charAt(0);
+        }
+    }
+
+    boolean isFull() {
+        for (char c : board) {
+            if (c != 'X' && c!= 'O') return false;
+        }
+        return true;
+    }
+
+    List<Integer> getAvailableSpots() {
+        List<Integer> availableSpots = new ArrayList<>();
+        for (int i = 0; i < 9; i++) {
+            if (board[i] != 'X' && board[i] != 'O') {
+                availableSpots.add(i);
             }
         }
+        return availableSpots;
     }
 
-    public static boolean isFull() {
-        return numMoves == 9;
+    void update(int i, char move) {
+        board[i] = move;
     }
 
-    public static void update(int i, int j, char move) {
-        board[i][j] = move;
-        numMoves++;
-    }
-
-    public static boolean matchMade() {
-        return checkDiagonals() || checkCols() || checkRows();
-    }
-
-    public static boolean checkDiagonals() {
-        return (board[0][0] == board[1][1] && board[1][1] == board[2][2]) ||
-                (board[0][2] == board[1][1] && board[1][1] == board[2][0]);
-    }
-
-    public static boolean checkCols() {
-        for (int i = 0; i < 3; i++) {
-            if (board[0][i] == board[1][i] && board[1][i] == board[2][i]) return true;
+    boolean gameOver() {
+        if (isFull()) return true;
+        if ((board[0] == board[4] && board[4] == board[8]) ||
+                (board[6] == board[4] && board[4] == board[2])) {
+            winner = board[4];
+            return true;
+        }
+        for (int i = 0; i < 3; i++) { //Checking rows and columns
+            if (board[i*3] == board[i*3+1] && board[i*3+1] == board[i*3+2]) {
+                winner = board[i*3+1];
+                return true;
+            }
+            if (board[i] == board[i+3] && board[i+3] == board[i+6]) {
+                winner = board[i+3];
+                return true;
+            }
         }
         return false;
     }
 
-    public static boolean checkRows() {
-        for (int i = 0; i < 3; i++) {
-            if (board[i][0] == board[i][1] && board[i][1] == board[i][2]) return true;
+
+    int minimax(int depth, int player) {
+        Board copy = this;
+        List<Integer> availableSpots = getAvailableSpots();
+        int score;
+        if (gameOver()) {
+            if (winner == 'O') {
+                return 10;
+            } else if (winner == 'X') {
+                return -10;
+            } else {
+                return 0;
+            }
         }
-        return false;
+        if (availableSpots.size() == 0) return 0;
+
+        int max = Integer.MIN_VALUE, min = Integer.MAX_VALUE;
+
+        for (int i = 0; i < availableSpots.size(); i++) {
+            int spot = availableSpots.get(i);
+            if (player == 0) { //player 0 represents AI
+                copy.update(spot, 'O');
+                score = minimax(depth + 1, 1);
+                max = Math.max(score, max);
+                if (depth == 0 && score >= 0) {
+                    computerMove = spot;
+                }
+                if (score == 10) {
+                    copy.board[spot] = String.valueOf(spot).charAt(0);
+                    break;
+                }
+                if (i == availableSpots.size() - 1 && max < 0) {
+                    computerMove = spot;
+                }
+
+            } else if (player == 1) { //player 1 represents human
+                copy.update(spot, 'X');
+                score = minimax(depth + 1, 0);
+                min = Math.min(score, min);
+                if (min == -10) {
+                    copy.board[spot] = String.valueOf(spot).charAt(0);
+                }
+            }
+            copy.board[spot] = String.valueOf(spot).charAt(0);
+//            moveScores.put(spot, score);
+        }
+        return player == 0 ? max : min;
     }
 
-    public static void display() {
-        System.out.println(" + 1 + 2 + 3 +");
+    void display() {
         System.out.println(" +---+---+---+");
         for (int i = 0; i < 3; i++) {
-            System.out.print(i+1 + "| ");
+            System.out.print( " | ");
             for (int j = 0; j < 3; j++) {
-                System.out.print(board[i][j] + " | ");
+                System.out.print(board[3*i+j] + " | ");
             }
             System.out.println();
             System.out.println(" +---+---+---+");
         }
     }
 
-    public static void main(String[] args) {
-        Board b = new Board();
-        b.update(0, 2, 'X');
-        b.update(1, 1, 'X');
-        b.update(2, 0, 'O');
-        if (b.matchMade()) {
-            System.out.println("X is the winner!");
+    void reset() {
+        for (int i = 0; i < 9; i++) {
+            board[i] = String.valueOf(i).charAt(0);
         }
-        b.display();
     }
+
+    boolean isValidMove(int spot) {
+        return board[spot] != 'X' && board[spot] != 'O';
+    }
+
 }
