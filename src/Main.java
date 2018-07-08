@@ -12,15 +12,15 @@ public class Main {
         if (s.equals("y") || s.equals("Y")) {
             return true;
         } else {
-            System.out.println("Good bye!");
+            System.out.println("Thank you for playing. Good bye!");
             return false;
         }
     }
 
     private static void checkWin(Board b) {
-        if (b.winner == 'X') {
+        if (b.hasWon('X')) {
             System.out.println("Congratulations! You've won!");
-        } else if (b.winner == 'O') {
+        } else if (b.hasWon('O')) {
             System.out.println("Oh no! The computer won this time around.");
         } else {
             System.out.println("It's a tie game!");
@@ -44,9 +44,13 @@ public class Main {
             board.display();
             int playerMove, computerMove;
             while (!board.gameOver()) {
+                while(!scanner.hasNextInt()) {
+                    System.out.println("Please enter a valid number from 0 to 8.");
+                    scanner.next();
+                }
                 playerMove = scanner.nextInt();
                 while (!board.isValidMove(playerMove)) {
-                    System.out.println("That cell is taken. Please choose another.");
+                    System.out.println("That cell is taken or invalid. Please choose another.");
                     playerMove = scanner.nextInt();
                 }
                 board.update(playerMove, 'X');
