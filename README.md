@@ -1,7 +1,7 @@
 # TicTacToe
 Coding challenge for HolidayCheck
 
-An implementation of Tic Tac Toe on the terminal, where you play against an AI that uses the minimax algorithm.
+An implementation of Tic Tac Toe on the terminal, where you play against an AI that uses the [minimax algorithm](https://www.neverstopbuilding.com/blog/2013/12/13/tic-tac-toe-understanding-the-minimax-algorithm13).
 
 ## Gameplay
 
@@ -29,3 +29,6 @@ The computer comes in three different difficulty levels. The difficulty is chara
  - Hard: 0.2
 
 ## Notes
+
+ - The player is always 'X' and the computer is always 'O'
+ - The player always chooses first

@@ -8,41 +8,61 @@ public class Main {
         return s.equals("easy") || s.equals("med") || s.equals("hard");
     }
 
+    private static boolean restartGame(String s) {
+        if (s.equals("y") || s.equals("Y")) {
+            return true;
+        } else {
+            System.out.println("Good bye!");
+            return false;
+        }
+    }
+
+    private static void checkWin(Board b) {
+        if (b.winner == 'X') {
+            System.out.println("Congratulations! You've won!");
+        } else if (b.winner == 'O') {
+            System.out.println("Oh no! The computer won this time around.");
+        } else {
+            System.out.println("It's a tie game!");
+        }
+    }
+
     public static void main(String[] args) {
-        board.reset();
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Welcome to Tic Tac Toe!");
-        System.out.println("Please choose a difficulty (easy, med, hard):");
-        String diff = scanner.next();
-        while (!checkValidDifficulty(diff)) {
-            System.out.println("Invalid difficulty. Please choose from the following: easy, med, hard");
-            diff = scanner.next();
-        }
-        computer = new Computer(diff);
-        System.out.println("Please choose a number indicating your move.");
-        board.display();
-        int playerMove, computerMove;
-        while (!board.gameOver()) {
-            playerMove = scanner.nextInt();
-            while (!board.isValidMove(playerMove)) {
-                System.out.println("That cell is taken. Please choose another.");
+        boolean playGame = true;
+        while(playGame) {
+            board.reset();
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Welcome to Tic Tac Toe!");
+            System.out.println("Please choose a difficulty (easy, med, hard):");
+            String diff = scanner.next();
+            while (!checkValidDifficulty(diff)) {
+                System.out.println("Invalid answer. Please choose from the following: easy, med, hard");
+                diff = scanner.next();
+            }
+            computer = new Computer(diff);
+            System.out.println("Please choose a number indicating your move.");
+            board.display();
+            int playerMove, computerMove;
+            while (!board.gameOver()) {
                 playerMove = scanner.nextInt();
+                while (!board.isValidMove(playerMove)) {
+                    System.out.println("That cell is taken. Please choose another.");
+                    playerMove = scanner.nextInt();
+                }
+                board.update(playerMove, 'X');
+                board.display();
+                if (board.gameOver()) {
+                    continue;
+                }
+                computerMove = computer.makeMove(board);
+                System.out.println("Computer chooses: Cell #" + computerMove);
+                board.update(computerMove, 'O');
+                board.display();
             }
-            board.update(playerMove, 'X');
-            board.display();
-            computerMove = computer.makeMove(board);
-            System.out.println("Computer chooses: Cell #" + computerMove);
-            board.update(computerMove, 'O');
-            board.display();
-        }
-        if (board.gameOver()) {
-            if (board.winner == 'X') {
-                System.out.println("Congratulations! You've won!");
-            } else if (board.winner == 'O') {
-                System.out.println("Oh no! The computer won this time around.");
-            } else {
-                System.out.println("Tie game!");
-            }
+            checkWin(board);
+
+            System.out.println("Would you like to play again? (y/n)");
+            playGame = restartGame(scanner.next());
         }
     }
 }

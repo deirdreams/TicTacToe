@@ -7,11 +7,9 @@ public class Board {
     char[] board;
     char winner;
     int computerMove;
-    Map<Integer, Integer> moveScores;
 
     Board() {
         board = new char[9];
-        moveScores = new HashMap<>();
         for (int i = 0; i < 9; i++) {
             board[i] = String.valueOf(i).charAt(0);
         }
@@ -58,16 +56,17 @@ public class Board {
         return false;
     }
 
-
+    /* The minimax recursive algorithm to maximise computer's score */
     int minimax(int depth, int player) {
         Board copy = this;
         List<Integer> availableSpots = getAvailableSpots();
+        Map<Integer, Integer> moveScores = new HashMap<>();
         int score;
-        if (gameOver()) {
+        if (gameOver()) { //Want 'O' (the computer) to have the best score
             if (winner == 'O') {
-                return 10;
+                return 10-depth;
             } else if (winner == 'X') {
-                return -10;
+                return depth-10;
             } else {
                 return 0;
             }
@@ -82,15 +81,8 @@ public class Board {
                 copy.update(spot, 'O');
                 score = minimax(depth + 1, 1);
                 max = Math.max(score, max);
-                if (depth == 0 && score >= 0) {
-                    computerMove = spot;
-                }
-                if (score == 10) {
-                    copy.board[spot] = String.valueOf(spot).charAt(0);
-                    break;
-                }
-                if (i == availableSpots.size() - 1 && max < 0) {
-                    computerMove = spot;
+                if (depth == 0) {
+                    moveScores.put(spot, score);
                 }
 
             } else if (player == 1) { //player 1 represents human
@@ -102,9 +94,22 @@ public class Board {
                 }
             }
             copy.board[spot] = String.valueOf(spot).charAt(0);
-//            moveScores.put(spot, score);
         }
+        computerMove = getMaxIndex(moveScores);
         return player == 0 ? max : min;
+    }
+
+    int getMaxIndex(Map<Integer, Integer> map) {
+        int max = Integer.MIN_VALUE;
+        int maxIndex = 0;
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            if (entry.getValue() > max) {
+                max = entry.getValue();
+                maxIndex = entry.getKey();
+
+            }
+        }
+        return maxIndex;
     }
 
     void display() {
@@ -120,6 +125,7 @@ public class Board {
     }
 
     void reset() {
+        winner = '-';
         for (int i = 0; i < 9; i++) {
             board[i] = String.valueOf(i).charAt(0);
         }
