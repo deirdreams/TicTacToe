@@ -1,16 +1,17 @@
+
+
 # TicTacToe
 Coding challenge for HolidayCheck
 
-An implementation of Tic Tac Toe on the terminal, where you play against an AI that uses the [minimax algorithm](https://www.neverstopbuilding.com/blog/2013/12/13/tic-tac-toe-understanding-the-minimax-algorithm13).
+An implementation of Tic Tac Toe on the terminal, where you play against an AI that uses the minimax algorithm. My use of this algorithm was inspired by [this blog post](https://www.neverstopbuilding.com/blog/2013/12/13/tic-tac-toe-understanding-the-minimax-algorithm13) discussing how the minimax algorithm can be used efficiently for this game.
 
 ## Gameplay
 
-Run:
+Run the jar application:
 
-    javac Main.java Board.java Computer.java
-    java Main
+    java -jar TicTacToe.jar
 
-Player will choose from one the the 9 available cells using the number corresponding to the cell.
+After choosing a difficulty, the player can choose from one the the 9 available cells using the number corresponding to the cell.
 
     +---+---+---+
     | 0 | 1 | 2 |
@@ -26,7 +27,9 @@ The computer comes in three different difficulty levels. The difficulty is chara
 
  - Easy: 0.8
  - Med: 0.4
- - Hard: 0.2
+ - Hard: 0.1
+
+The downside of this randomness in terms of the computer is that the player can almost have a match (i.e. two in one row/col/diagonal) and the computer, even on hard mode, can randomly choose a spot that doesn't stop that match, allowing the player to win. However, this also gives the player a chance to win on hard mode.
 
 ## Notes
 

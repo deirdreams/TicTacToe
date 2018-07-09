@@ -1,11 +1,8 @@
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Board {
     char[] board;
-    int computerMove;
 
     Board() {
         board = new char[9];
@@ -21,6 +18,7 @@ public class Board {
         return true;
     }
 
+    /* Get the spots not occupied by player or computer */
     List<Integer> getAvailableSpots() {
         List<Integer> availableSpots = new ArrayList<>();
         for (int i = 0; i < 9; i++) {
@@ -39,7 +37,7 @@ public class Board {
         return isFull() || hasWon('X') || hasWon('O');
     }
 
-
+    /* Check diagonals, rows, and cols if specific player has a match */
     boolean hasWon(char playerSymbol) {
         if ((board[0] == board[4] && board[4] == board[8] && board[8] == playerSymbol) ||
         (board[6] == board[4] && board[4] == board[2] && board[2] == playerSymbol)) {
@@ -54,64 +52,6 @@ public class Board {
             }
         }
         return false;
-    }
-
-    /* The minimax recursive algorithm to maximise computer's score */
-    int minimax(int depth, int player) {
-        Board copy = this;
-        List<Integer> availableSpots = copy.getAvailableSpots();
-        Map<Integer, Integer> moveScores = new HashMap<>();
-        int score;
-        if (gameOver()) { //Want 'O' (the computer) to have the best score
-            if (copy.hasWon('O')) {
-                return 10-depth;
-            } else if (copy.hasWon('X')) {
-                return depth-10;
-            } else {
-                return 0;
-            }
-        }
-        if (availableSpots.size() == 0) return 0;
-
-        int max = Integer.MIN_VALUE, min = Integer.MAX_VALUE;
-
-        for (int i = 0; i < availableSpots.size(); i++) {
-            int spot = availableSpots.get(i);
-            if (player == 0) { //player 0 represents AI
-                copy.update(spot, 'O');
-                score = minimax(depth + 1, 1);
-                max = Math.max(score, max);
-                if (depth == 0) {
-                    System.out.println("Score for position " + spot + " : " + score);
-                    moveScores.put(spot, score);
-                }
-
-            } else if (player == 1) { //player 1 represents human
-                copy.update(spot, 'X');
-                score = minimax(depth + 1, 0);
-                min = Math.min(score, min);
-                if (min == -10) {
-                    copy.board[spot] = String.valueOf(spot).charAt(0);
-                }
-            }
-            copy.board[spot] = String.valueOf(spot).charAt(0);
-        }
-        computerMove = getMaxIndex(moveScores);
-        return player == 0 ? max : min;
-    }
-
-    /* Get the index with the maximum value, i.e. the best move */
-    int getMaxIndex(Map<Integer, Integer> map) {
-        int max = Integer.MIN_VALUE;
-        int maxIndex = 0;
-        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
-            if (entry.getValue() > max) {
-                max = entry.getValue();
-                maxIndex = entry.getKey();
-
-            }
-        }
-        return maxIndex;
     }
 
     void display() {
