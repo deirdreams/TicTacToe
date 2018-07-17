@@ -42,4 +42,29 @@ public class BoardTest {
         Assert.assertFalse(b.hasWon('O'));
     }
 
+    @Test
+    public void isValidMoveReturnsTrueIfSpotIsNotTaken() {
+        Assert.assertTrue(b.isValidMove(0));
+    }
+
+    @Test
+    public void isValidMoveReturnsFalseIfNotInRangeOrSpotTaken() {
+        Assert.assertFalse(b.isValidMove(-10));
+        b.update(3, 'O');
+        Assert.assertFalse(b.isValidMove(3));
+    }
+
+    @Test
+    public void getAvailableSpotsReturnsCorrectList() {
+        b.update(3, 'X');
+        b.update(7, 'O');
+        Assert.assertFalse(b.getAvailableSpots().contains(3));
+        Assert.assertFalse(b.getAvailableSpots().contains(7));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void updateThrowsExceptionIfInvalidArgument() {
+        b.update(0, 'C');
+    }
+
 }

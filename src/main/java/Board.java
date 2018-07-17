@@ -30,6 +30,9 @@ public class Board {
     }
 
     void update(int i, char move) {
+        if (move != 'X' && move != 'O') {
+            throw new IllegalArgumentException("Argument must be an 'X' or 'O'.");
+        }
         board[i] = move;
     }
 

@@ -66,4 +66,14 @@ public class ComputerTest {
 
         Assert.assertEquals(c.minimax(mockBoard, 3, 0), -7);
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void minimaxThrowsExceptionWhenPlayerIsNot1Or0() {
+        c.minimax(mockBoard, 0, -1);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void minimaxThrowsExceptionWhenDepthIsLessThan0() {
+        c.minimax(mockBoard, -10, 1);
+    }
 }

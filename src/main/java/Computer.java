@@ -35,6 +35,10 @@ public class Computer {
 
     /* The minimax recursive algorithm to maximise computer's score */
     int minimax(Board b, int depth, int player) {
+        if (player < 0 || player > 1 || depth < 0) {
+            throw new IllegalArgumentException("Player should be 0 or 1. Depth should be greater than 0.");
+        }
+
         List<Integer> availableSpots = b.getAvailableSpots();
         Map<Integer, Integer> moveScores = new HashMap<>();
         int score;
@@ -63,13 +67,10 @@ public class Computer {
                     moveScores.put(spot, score);
                 }
 
-            } else if (player == 1) { //player 1 represents human
+            } else { //player 1 represents human
                 b.update(spot, 'X');
                 score = minimax(b, depth + 1, 0);
                 min = Math.min(score, min);
-                if (min == -10) {
-                    b.board[spot] = String.valueOf(spot).charAt(0);
-                }
             }
             b.board[spot] = String.valueOf(spot).charAt(0);
         }
