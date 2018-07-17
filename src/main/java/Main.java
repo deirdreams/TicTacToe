@@ -56,6 +56,10 @@ public class Main {
 
                 while (!board.isValidMove(playerMove)) {
                     System.out.println("That cell is taken or invalid. Please choose another.");
+                    while(!scanner.hasNextInt()) {
+                        System.out.println("Please enter a valid number from 0 to 8.");
+                        scanner.next();
+                    }
                     playerMove = scanner.nextInt();
                 }
                 board.update(playerMove, 'X');

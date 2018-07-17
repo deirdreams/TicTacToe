@@ -35,16 +35,15 @@ public class Computer {
 
     /* The minimax recursive algorithm to maximise computer's score */
     int minimax(Board b, int depth, int player) {
-        Board copy = b;
-        List<Integer> availableSpots = copy.getAvailableSpots();
+        List<Integer> availableSpots = b.getAvailableSpots();
         Map<Integer, Integer> moveScores = new HashMap<>();
         int score;
 
         //scores based on depth and winner
-        if (copy.gameOver()) { //Want 'O' (the computer) to have the best score
-            if (copy.hasWon('O')) {
+        if (b.gameOver()) { //Want 'O' (the computer) to have the best score
+            if (b.hasWon('O')) {
                 return 10-depth;
-            } else if (copy.hasWon('X')) {
+            } else if (b.hasWon('X')) {
                 return depth-10;
             } else {
                 return 0;
@@ -57,22 +56,22 @@ public class Computer {
         for (int i = 0; i < availableSpots.size(); i++) {
             int spot = availableSpots.get(i);
             if (player == 0) { //player 0 represents AI
-                copy.update(spot, 'O');
-                score = minimax(copy, depth + 1, 1);
+                b.update(spot, 'O');
+                score = minimax(b, depth + 1, 1);
                 max = Math.max(score, max);
                 if (depth == 0) {
                     moveScores.put(spot, score);
                 }
 
             } else if (player == 1) { //player 1 represents human
-                copy.update(spot, 'X');
-                score = minimax(copy, depth + 1, 0);
+                b.update(spot, 'X');
+                score = minimax(b, depth + 1, 0);
                 min = Math.min(score, min);
                 if (min == -10) {
-                    copy.board[spot] = String.valueOf(spot).charAt(0);
+                    b.board[spot] = String.valueOf(spot).charAt(0);
                 }
             }
-            copy.board[spot] = String.valueOf(spot).charAt(0);
+            b.board[spot] = String.valueOf(spot).charAt(0);
         }
 
         //set the computer's chosen move to the spot with the best score
