@@ -7,10 +7,6 @@ An implementation of Tic Tac Toe on the terminal, where you play against an AI t
 
 ## Gameplay
 
-Run the jar application:
-
-    java -jar TicTacToe.jar
-
 After choosing a difficulty, the player can choose from one the the 9 available cells using the number corresponding to the cell.
 
     +---+---+---+
