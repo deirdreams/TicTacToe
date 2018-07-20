@@ -45,9 +45,9 @@ public class Computer {
 
         //scores based on depth and winner
         if (b.gameOver()) { //Want 'O' (the computer) to have the best score
-            if (b.hasWon('O')) {
+            if (b.getWinner() == 'O') {
                 return 10-depth;
-            } else if (b.hasWon('X')) {
+            } else if (b.getWinner() == 'X') {
                 return depth-10;
             } else {
                 return 0;

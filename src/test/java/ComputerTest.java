@@ -57,12 +57,11 @@ public class ComputerTest {
     @Test
     public void minimaxReturnsCorrectScoreBasedOnWinningPlayer() {
         when(mockBoard.gameOver()).thenReturn(true);
-        when(mockBoard.hasWon('O')).thenReturn(true);
+        when(mockBoard.getWinner()).thenReturn('O');
 
         Assert.assertEquals(c.minimax(mockBoard, 3, 0), 7);
 
-        when(mockBoard.hasWon('O')).thenReturn(false);
-        when(mockBoard.hasWon('X')).thenReturn(true);
+        when(mockBoard.getWinner()).thenReturn('X');
 
         Assert.assertEquals(c.minimax(mockBoard, 3, 0), -7);
     }

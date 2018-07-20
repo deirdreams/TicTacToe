@@ -3,12 +3,18 @@ import java.util.List;
 
 public class Board {
     char[] board;
+    private char winner;
 
     Board() {
         board = new char[9];
+        winner = '-';
         for (int i = 0; i < 9; i++) {
             board[i] = String.valueOf(i).charAt(0);
         }
+    }
+
+    char getWinner() {
+        return winner;
     }
 
     boolean isFull() {
@@ -37,7 +43,16 @@ public class Board {
     }
 
     boolean gameOver() {
-        return isFull() || hasWon('X') || hasWon('O');
+//        return isFull() || hasWon('X') || hasWon('O');
+        if (hasWon('X')) {
+            winner = 'X';
+            return true;
+        }
+        if (hasWon('O')) {
+            winner = 'O';
+            return true;
+        }
+        return isFull();
     }
 
     /* Check diagonals, rows, and cols if specific player has a match */
@@ -73,6 +88,7 @@ public class Board {
         for (int i = 0; i < 9; i++) {
             board[i] = String.valueOf(i).charAt(0);
         }
+        winner = '-';
     }
 
     boolean isValidMove(int spot) {

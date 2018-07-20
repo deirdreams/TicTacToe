@@ -55,6 +55,15 @@ public class BoardTest {
     }
 
     @Test
+    public void gameOverUpdatesWinner() {
+        b.update(3, 'O');
+        b.update(4, 'O');
+        b.update(5, 'O');
+        b.gameOver();
+        Assert.assertEquals(b.getWinner(), 'O');
+    }
+
+    @Test
     public void getAvailableSpotsReturnsCorrectList() {
         b.update(3, 'X');
         b.update(7, 'O');
