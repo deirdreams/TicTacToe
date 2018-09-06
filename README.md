@@ -7,15 +7,16 @@ An implementation of Tic Tac Toe on the terminal, where you play against an AI t
 
 ## Gameplay
 
-After choosing a difficulty, the player can choose from one the the 9 available cells using the number corresponding to the cell.
+After choosing a difficulty and a board size, the player can choose from one the available cells using the point corresponding to the cell (e.g 1, 1).
 
-    +---+---+---+
-    | 0 | 1 | 2 |
-    +---+---+---+
-    | 3 | 4 | 5 |
-    +---+---+---+
-    | 6 | 7 | 8 |
-    +---+---+---+
+        0   1   2
+      +---+---+---+
+    0 |   |   |   |
+      +---+---+---+
+    1 |   |   |   |
+      +---+---+---+
+    2 |   |   |   |
+      +---+---+---+
 
 ## The Computer
 

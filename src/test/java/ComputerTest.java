@@ -15,7 +15,7 @@ public class ComputerTest {
     private Computer c = new Computer("easy");
 
     @Mock
-    private ArrayList<Integer> mockList;
+    private ArrayList<Point> mockList;
 
     @Mock
     private Board mockBoard;
@@ -27,23 +27,26 @@ public class ComputerTest {
 
     @Test
     public void getMaxIndexReturnsCorrectValue() {
-        Map<Integer, Integer> testMap = new HashMap<>();
-        testMap.put(2, 7);
-        testMap.put(3, 6);
-        testMap.put(8, 10);
-        testMap.put(10, 3);
-        Assert.assertEquals(c.getMaxIndex(testMap), 8);
+        Map<Point, Integer> testMap = new HashMap<>();
+        Point maxIndex = new Point(0, 4);
+        testMap.put(new Point(3, 1), 7);
+        testMap.put(new Point(1, 1), 6);
+        testMap.put(maxIndex, 10);
+        testMap.put(new Point(2, 2), 3);
+        Assert.assertEquals(c.getMaxIndex(testMap), maxIndex);
     }
 
     @Test
     public void chooseRandomReturnsElementFromAvailableSpots() {
         when(mockBoard.getAvailableSpots()).thenReturn(mockList);
         when(mockList.size()).thenReturn(2);
-        when(mockList.get(0)).thenReturn(3);
-        when(mockList.get(1)).thenReturn(4);
-        int actual = c.chooseRandom(mockBoard);
+        Point p1 = new Point(1, 1);
+        Point p2 = new Point(3, 3);
+        when(mockList.get(0)).thenReturn(p1);
+        when(mockList.get(1)).thenReturn(p2);
+        Point actual = c.chooseRandom(mockBoard);
 
-        Assert.assertTrue(actual == 3 || actual == 4);
+        Assert.assertTrue(actual == p1 || actual == p2);
     }
 
     @Test

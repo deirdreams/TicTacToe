@@ -8,7 +8,8 @@ import java.util.ArrayList;
 
 public class BoardTest {
 
-    private Board b = new Board();
+    private int BOARD_SIZE = 5;
+    private Board b = new Board(BOARD_SIZE);
 
     @Mock
     private ArrayList<Integer> mockList;
@@ -20,60 +21,66 @@ public class BoardTest {
 
     @Test
     public void boardInitialisesWithCorrectNumbers() {
-        for (int i = 0; i < 9; i++) {
-            Assert.assertEquals(b.board[i], String.valueOf(i).charAt(0));
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                Assert.assertEquals(b.board[i][j], ' ');
+            }
         }
     }
 
     @Test
     public void ifFullReturnsTrueIfFull() {
-        for (int i = 0; i < 9; i++) {
-            b.update(i,'X');
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                b.update(new Point(i, j), 'X');
+            }
         }
         Assert.assertTrue(b.isFull());
     }
 
     @Test
     public void hasWonReturnsCorrectBooleanBasedOnWinner() {
-        b.update(0, 'X');
-        b.update(1, 'X');
-        b.update(2, 'X');
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            b.update(new Point(i, i), 'X');
+        }
         Assert.assertTrue(b.hasWon('X'));
         Assert.assertFalse(b.hasWon('O'));
     }
 
     @Test
     public void isValidMoveReturnsTrueIfSpotIsNotTaken() {
-        Assert.assertTrue(b.isValidMove(0));
+        Assert.assertTrue(b.isValidMove(new Point(0,0)));
     }
 
     @Test
     public void isValidMoveReturnsFalseIfNotInRangeOrSpotTaken() {
-        Assert.assertFalse(b.isValidMove(-10));
-        b.update(3, 'O');
-        Assert.assertFalse(b.isValidMove(3));
+        Assert.assertFalse(b.isValidMove(new Point(-20, 3)));
+        b.update(new Point(0, 3), 'O');
+        Assert.assertFalse(b.isValidMove(new Point(0, 3)));
     }
 
     @Test
     public void gameOverUpdatesWinner() {
-        b.update(3, 'O');
-        b.update(4, 'O');
-        b.update(5, 'O');
+        for (int j = 0; j < BOARD_SIZE; j++) {
+            b.update(new Point(0, j), 'O');
+        }
         b.gameOver();
         Assert.assertEquals(b.getWinner(), 'O');
     }
 
     @Test
     public void getAvailableSpotsReturnsCorrectList() {
-        b.update(3, 'X');
-        b.update(7, 'O');
-        Assert.assertFalse(b.getAvailableSpots().contains(3));
-        Assert.assertFalse(b.getAvailableSpots().contains(7));
+        Point p1 = new Point(0, 4);
+        Point p2 = new Point(3, 3);
+        b.update(p1, 'X');
+        b.update(p2, 'O');
+        Assert.assertFalse(b.getAvailableSpots().contains(p1));
+        Assert.assertFalse(b.getAvailableSpots().contains(p2));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void updateThrowsExceptionIfInvalidArgument() {
-        b.update(0, 'C');
+        b.update(new Point(3,2), 'C');
     }
 
 }

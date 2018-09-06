@@ -2,14 +2,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Board {
-    char[] board;
+    static char[][] board;
     private char winner;
+    private int n;
 
-    Board() {
-        board = new char[9];
+    Board(int n) {
+        this.n = n;
+        board = new char[n][n];
         winner = '-';
-        for (int i = 0; i < 9; i++) {
-            board[i] = String.valueOf(i).charAt(0);
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                board[i][j] = ' ';
+            }
         }
     }
 
@@ -17,33 +21,38 @@ public class Board {
         return winner;
     }
 
+    int getSize() { return n; }
+
     boolean isFull() {
-        for (char c : board) {
-            if (c != 'X' && c!= 'O') return false;
+        for (char[] row : board) {
+            for (char c : row) {
+                if (c != 'X' && c!= 'O') return false;
+            }
         }
         return true;
     }
 
     /* Get the spots not occupied by player or computer */
-    List<Integer> getAvailableSpots() {
-        List<Integer> availableSpots = new ArrayList<>();
-        for (int i = 0; i < 9; i++) {
-            if (board[i] != 'X' && board[i] != 'O') {
-                availableSpots.add(i);
+    List<Point> getAvailableSpots() {
+        List<Point> availableSpots = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (board[i][j] != 'X' && board[i][j] != 'O') {
+                    availableSpots.add(new Point(i, j));
+                }
             }
         }
         return availableSpots;
     }
 
-    void update(int i, char move) {
+    void update(Point p, char move) {
         if (move != 'X' && move != 'O') {
             throw new IllegalArgumentException("Argument must be an 'X' or 'O'.");
         }
-        board[i] = move;
+        board[p.getX()][p.getY()] = move;
     }
 
     boolean gameOver() {
-//        return isFull() || hasWon('X') || hasWon('O');
         if (hasWon('X')) {
             winner = 'X';
             return true;
@@ -57,42 +66,81 @@ public class Board {
 
     /* Check diagonals, rows, and cols if specific player has a match */
     boolean hasWon(char playerSymbol) {
-        if ((board[0] == board[4] && board[4] == board[8] && board[8] == playerSymbol) ||
-        (board[6] == board[4] && board[4] == board[2] && board[2] == playerSymbol)) {
-            return true;
+        int result = 0;
+        for (int i = 0; i < n; i++) { //diagonal-left
+            if (board[i][i] == playerSymbol) result++;
+            else break;
         }
-        for (int i = 0; i < 3; i++) { //Checking rows and columns for a match
-            if (board[i*3] == board[i*3+1] && board[i*3+1] == board[i*3+2] && board[i*3+2] == playerSymbol) {
-                return true;
+        if (result == n) return true;
+
+        result = 0;
+        for (int i = 0; i < n; i++) { //diagonal-right
+            if (board[i][n-1-i] == playerSymbol) result++;
+            else break;
+        }
+        if (result == n) return true;
+
+
+        for (int i = 0; i < n; i++) { //rows
+            result = 0;
+            int j = 0;
+            while(j < n) {
+                if (board[i][j++] == playerSymbol) result++;
+                else break;
             }
-            if (board[i] == board[i+3] && board[i+3] == board[i+6] && board[i+6] == playerSymbol) {
-                return true;
+            if (result == n) return true;
+        }
+
+        for (int j = 0; j < n; j++) { //columns
+            result = 0;
+            int i = 0;
+            while (i < n) {
+                if (board[i++][j] == playerSymbol) result++;
+                else break;
             }
+            if (result == n) return true;
         }
         return false;
     }
 
     void display() {
-        System.out.println(" +---+---+---+");
-        for (int i = 0; i < 3; i++) {
-            System.out.print( " | ");
-            for (int j = 0; j < 3; j++) {
-                System.out.print(board[3*i+j] + " | ");
+        System.out.print("    ");
+        for (int i = 0; i < n; i++) {
+            System.out.print(String.valueOf(i) + "   ");
+        }
+        System.out.println();
+        System.out.print("  +---+");
+        for (int i = 0; i < n-1; i++) {
+            System.out.print("---+");
+        }
+        System.out.println();
+        for (int i = 0; i < n; i++) {
+            System.out.print( String.valueOf(i) + " | ");
+            for (int j = 0; j < n; j++) {
+                System.out.print(board[i][j] + " | ");
             }
             System.out.println();
-            System.out.println(" +---+---+---+");
+            System.out.print("  +---+");
+            for (int k = 0; k < n-1; k++) {
+                System.out.print("---+");
+            }
+            System.out.println();
         }
     }
 
     void reset() {
-        for (int i = 0; i < 9; i++) {
-            board[i] = String.valueOf(i).charAt(0);
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                board[i][j] = ' ';
+            }
         }
         winner = '-';
     }
 
-    boolean isValidMove(int spot) {
-        return spot > -1 && spot < 9 && board[spot] != 'X' && board[spot] != 'O';
+    boolean isValidMove(Point spot) {
+        if (spot.getX() < 0 || spot.getX() >= n || spot.getY() < 0 || spot.getY() >= n) return false;
+        return board[spot.getX()][spot.getY()] != 'X' && board[spot.getX()][spot.getY()] != 'O';
     }
+
 
 }

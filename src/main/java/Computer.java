@@ -6,7 +6,7 @@ import java.util.Random;
 public class Computer {
     private int probability;
     private Random random;
-    private int computerMove;
+    private Point computerMove;
 
     Computer(String diff) {
        random = new Random();
@@ -27,8 +27,8 @@ public class Computer {
     }
 
     /* Choosing a random empty spot on the board */
-    int chooseRandom(Board b) {
-        List<Integer> availableSpots = b.getAvailableSpots();
+    Point chooseRandom(Board b) {
+        List<Point> availableSpots = b.getAvailableSpots();
         int chosen = random.nextInt(availableSpots.size());
         return availableSpots.get(chosen);
     }
@@ -39,9 +39,11 @@ public class Computer {
             throw new IllegalArgumentException("Player should be 0 or 1. Depth should be greater than 0.");
         }
 
-        List<Integer> availableSpots = b.getAvailableSpots();
-        Map<Integer, Integer> moveScores = new HashMap<>();
+        List<Point> availableSpots = b.getAvailableSpots();
+        Map<Point, Integer> moveScores = new HashMap<>();
         int score;
+
+        if (depth > b.getSize()) { return 0; }
 
         //scores based on depth and winner
         if (b.gameOver()) { //Want 'O' (the computer) to have the best score
@@ -58,7 +60,7 @@ public class Computer {
         int max = Integer.MIN_VALUE, min = Integer.MAX_VALUE;
 
         for (int i = 0; i < availableSpots.size(); i++) {
-            int spot = availableSpots.get(i);
+            Point spot = availableSpots.get(i);
             if (player == 0) { //player 0 represents AI
                 b.update(spot, 'O');
                 score = minimax(b, depth + 1, 1);
@@ -72,7 +74,7 @@ public class Computer {
                 score = minimax(b, depth + 1, 0);
                 min = Math.min(score, min);
             }
-            b.board[spot] = String.valueOf(spot).charAt(0);
+            b.board[spot.getX()][spot.getY()] = ' ';
         }
 
         //set the computer's chosen move to the spot with the best score
@@ -81,10 +83,10 @@ public class Computer {
     }
 
     /* Get the index with the maximum value, i.e. the best move */
-    int getMaxIndex(Map<Integer, Integer> map) {
+    Point getMaxIndex(Map<Point, Integer> map) {
         int max = Integer.MIN_VALUE;
-        int maxIndex = 0;
-        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+        Point maxIndex = new Point(Integer.MIN_VALUE, Integer.MIN_VALUE);
+        for (Map.Entry<Point, Integer> entry : map.entrySet()) {
             if (entry.getValue() > max) {
                 max = entry.getValue();
                 maxIndex = entry.getKey();
@@ -94,7 +96,7 @@ public class Computer {
     }
 
     /* Deciding whether to use minimax or random for the next move based on the probability */
-    int makeMove(Board b) {
+    Point makeMove(Board b) {
         int chosen = random.nextInt(11);
         if (chosen > probability) {
             minimax(b,0, 0);
